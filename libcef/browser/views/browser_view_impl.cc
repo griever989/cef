@@ -230,8 +230,7 @@ void CefBrowserViewImpl::SetPendingBrowserCreateParams(
 }
 
 void CefBrowserViewImpl::SetDefaults(const CefBrowserSettings& settings) {
-  SetBackgroundColor(
-      CefContext::Get()->GetBackgroundColor(&settings, STATE_DISABLED));
+  SetBackgroundColor(SK_ColorTRANSPARENT);
 }
 
 views::View* CefBrowserViewImpl::CreateRootView() {

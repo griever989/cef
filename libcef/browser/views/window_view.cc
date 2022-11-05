@@ -368,6 +368,8 @@ void CefWindowView::CreateWidget(gfx::AcceleratedWidget parent_widget) {
   }
 #endif
 
+  params.opacity = views::Widget::InitParams::WindowOpacity::kTranslucent;
+
   widget->Init(std::move(params));
   widget->AddObserver(this);
 
