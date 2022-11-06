@@ -32,7 +32,7 @@ class BluBrowser : public CefApp,
 
   virtual void OnContextCreated(CefRefPtr<CefBrowser> browser,
 		 CefRefPtr<CefFrame> frame,
-		 CefRefPtr<CefV8Context> context) OVERRIDE;
+		 CefRefPtr<CefV8Context> context) override;
 
   BluScriptHandler* handler;
 
