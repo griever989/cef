@@ -17,7 +17,7 @@ public:
 		CefRefPtr<CefV8Value>& retval,
 		CefString& exception) override;
 
-    ~BluScriptHandler() { };
+    ~BluScriptHandler() { }
 
 	// Provide the reference counting implementation for this class.
 	IMPLEMENT_REFCOUNTING(BluScriptHandler);

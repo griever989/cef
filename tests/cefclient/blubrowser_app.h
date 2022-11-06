@@ -16,14 +16,16 @@ class BluBrowser : public CefApp,
   BluBrowser();
 
   // CefApp methods:
-  virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
-      OVERRIDE { return this; }
+  virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() override {
+    return this;
+  }
 
-  virtual CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler()
-	  OVERRIDE { return this; }
+  virtual CefRefPtr<CefRenderProcessHandler> GetRenderProcessHandler() override {
+    return this;
+  }
 
   // CefBrowserProcessHandler methods:
-  virtual void OnContextInitialized() OVERRIDE;
+  virtual void OnContextInitialized() override;
 
  private:
   // Include the default reference counting implementation.
