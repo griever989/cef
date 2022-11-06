@@ -54,7 +54,8 @@ class SimpleWindowDelegate : public CefWindowDelegate {
   DISALLOW_COPY_AND_ASSIGN(SimpleWindowDelegate);
 };
 
-class SimpleBrowserViewDelegate : public CefBrowserViewDelegate {
+class SimpleBrowserViewDelegate : public CefBrowserViewDelegate,
+                                  public CefWindowDelegate {
  public:
   SimpleBrowserViewDelegate() {}
 
