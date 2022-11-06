@@ -70,6 +70,10 @@ class SimpleBrowserViewDelegate : public CefBrowserViewDelegate {
     return true;
   }
 
+  bool IsFrameless(CefRefPtr<CefWindow> window) override {
+    return true;
+  }
+
  private:
   IMPLEMENT_REFCOUNTING(SimpleBrowserViewDelegate);
   DISALLOW_COPY_AND_ASSIGN(SimpleBrowserViewDelegate);
