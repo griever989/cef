@@ -392,6 +392,10 @@ void CefWindowView::CreateWidget(gfx::AcceleratedWidget parent_widget) {
   }
 #endif
 #endif
+
+  CefRefPtr<CefView> cef_view = view_util::GetFor(GetContentsView(), false);
+  if (cef_view)
+    cef_view->SetBackgroundColor(SK_ColorTRANSPARENT);
 }
 
 CefRefPtr<CefWindow> CefWindowView::GetCefWindow() const {
