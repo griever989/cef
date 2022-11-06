@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include "blubrowser_app.h"
 #include "include/cef_command_line.h"
 #include "include/cef_sandbox_win.h"
 #include "tests/cefclient/browser/main_context_impl.h"
@@ -54,14 +55,7 @@ int RunMain(HINSTANCE hInstance, int nCmdShow) {
   command_line->InitFromString(::GetCommandLineW());
 
   // Create a ClientApp of the correct type.
-  CefRefPtr<CefApp> app;
-  ClientApp::ProcessType process_type = ClientApp::GetProcessType(command_line);
-  if (process_type == ClientApp::BrowserProcess)
-    app = new ClientAppBrowser();
-  else if (process_type == ClientApp::RendererProcess)
-    app = new ClientAppRenderer();
-  else if (process_type == ClientApp::OtherProcess)
-    app = new ClientAppOther();
+  CefRefPtr<BluBrowser> app(new BluBrowser);
 
   // Execute the secondary process, if any.
   int exit_code = CefExecuteProcess(main_args, app, sandbox_info);
