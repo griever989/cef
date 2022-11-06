@@ -1,6 +1,7 @@
-// Copyright (c) 2013 The Chromium Embedded Framework Authors. All rights
+// Some code in this file are Copyright (c) 2013 The Chromium Embedded Framework Authors. All rights
 // reserved. Use of this source code is governed by a BSD-style license that
 // can be found in the LICENSE file.
+// Other code Copyright (c) Aaron M. Shea 2014 for the BLUI project
 
 #ifndef CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
 #define CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_
@@ -9,16 +10,16 @@
 
 #include <list>
 
-class SimpleHandler : public CefClient,
+class BluHandler : public CefClient,
                       public CefDisplayHandler,
                       public CefLifeSpanHandler,
                       public CefLoadHandler {
  public:
-  SimpleHandler();
-  ~SimpleHandler();
+  BluHandler();
+  ~BluHandler();
 
   // Provide access to the single global instance of this object.
-  static SimpleHandler* GetInstance();
+  static BluHandler* GetInstance();
 
   // CefClient methods:
   virtual CefRefPtr<CefDisplayHandler> GetDisplayHandler() OVERRIDE {
@@ -60,7 +61,7 @@ class SimpleHandler : public CefClient,
   bool is_closing_;
 
   // Include the default reference counting implementation.
-  IMPLEMENT_REFCOUNTING(SimpleHandler);
+  IMPLEMENT_REFCOUNTING(BluHandler);
 };
 
 #endif  // CEF_TESTS_CEFSIMPLE_SIMPLE_HANDLER_H_

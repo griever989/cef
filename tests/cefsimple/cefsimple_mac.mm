@@ -5,28 +5,25 @@
 
 #import <Cocoa/Cocoa.h>
 
+#include "cefsimple/blubrowser_app.h"
+#include "cefsimple/blu_handler.h"
 #include "include/cef_application_mac.h"
-#include "include/cef_command_line.h"
 #include "include/wrapper/cef_helpers.h"
-#include "include/wrapper/cef_library_loader.h"
-#include "tests/cefsimple/simple_app.h"
-#include "tests/cefsimple/simple_handler.h"
 
 // Receives notifications from the application.
-@interface SimpleAppDelegate : NSObject <NSApplicationDelegate>
-
+@interface BluAppDelegate : NSObject
 - (void)createApplication:(id)object;
 - (void)tryToTerminateApplication:(NSApplication*)app;
 @end
 
 // Provide the CefAppProtocol implementation required by CEF.
-@interface SimpleApplication : NSApplication <CefAppProtocol> {
- @private
+@interface BluBrowserlication : NSApplication<CefAppProtocol> {
+@private
   BOOL handlingSendEvent_;
 }
 @end
 
-@implementation SimpleApplication
+@implementation BluBrowserlication
 - (BOOL)isHandlingSendEvent {
   return handlingSendEvent_;
 }
@@ -78,107 +75,76 @@
 // The standard |-applicationShouldTerminate:| is not supported, and code paths
 // leading to it must be redirected.
 - (void)terminate:(id)sender {
-  SimpleAppDelegate* delegate =
-      static_cast<SimpleAppDelegate*>([NSApp delegate]);
+  BluAppDelegate* delegate =
+      static_cast<BluAppDelegate*>([NSApp delegate]);
   [delegate tryToTerminateApplication:self];
   // Return, don't exit. The application is responsible for exiting on its own.
 }
 @end
 
-@implementation SimpleAppDelegate
+@implementation BluAppDelegate
 
 // Create the application on the UI thread.
 - (void)createApplication:(id)object {
-  [[NSBundle mainBundle] loadNibNamed:@"MainMenu"
-                                owner:NSApp
-                      topLevelObjects:nil];
-
+  [NSApplication sharedApplication];
+  [NSBundle loadNibNamed:@"MainMenu" owner:NSApp];
+  [NSApp setActivationPolicy: NSApplicationActivationPolicyProhibited];
   // Set the delegate for application events.
-  [[NSApplication sharedApplication] setDelegate:self];
+  [NSApp setDelegate:self];
 }
 
 - (void)tryToTerminateApplication:(NSApplication*)app {
-  SimpleHandler* handler = SimpleHandler::GetInstance();
+  BluHandler* handler = BluHandler::GetInstance();
   if (handler && !handler->IsClosing())
     handler->CloseAllBrowsers(false);
 }
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:
-    (NSApplication*)sender {
+      (NSApplication *)sender {
   return NSTerminateNow;
 }
 @end
 
+
 // Entry point function for the browser process.
 int main(int argc, char* argv[]) {
-  // Load the CEF framework library at runtime instead of linking directly
-  // as required by the macOS sandbox implementation.
-  CefScopedLibraryLoader library_loader;
-  if (!library_loader.LoadInMain())
-    return 1;
-
   // Provide CEF with command-line arguments.
   CefMainArgs main_args(argc, argv);
 
-  @autoreleasepool {
-    // Initialize the SimpleApplication instance.
-    [SimpleApplication sharedApplication];
+  // BluBrowser implements application-level callbacks. It will create the first
+  // browser instance in OnContextInitialized() after CEF has initialized.
+  CefRefPtr<BluBrowser> app(new BluBrowser);
 
-    // If there was an invocation to NSApp prior to this method, then the NSApp
-    // will not be a SimpleApplication, but will instead be an NSApplication.
-    // This is undesirable and we must enforce that this doesn't happen.
-    CHECK([NSApp isKindOfClass:[SimpleApplication class]]);
+  // Initialize the AutoRelease pool.
+  NSAutoreleasePool* autopool = [[NSAutoreleasePool alloc] init];
 
-    // Parse command-line arguments for use in this method.
-    CefRefPtr<CefCommandLine> command_line =
-        CefCommandLine::CreateCommandLine();
-    command_line->InitFromArgv(argc, argv);
+  // Initialize the BluBrowserlication instance.
+  [BluBrowserlication sharedApplication];
 
-    // Specify CEF global settings here.
-    CefSettings settings;
+  // Specify CEF global settings here.
+  CefSettings settings;
 
-    const bool with_chrome_runtime =
-        command_line->HasSwitch("enable-chrome-runtime");
+  // Initialize CEF for the browser process.
+  CefInitialize(main_args, settings, app.get(), NULL);
+  
+  // Create the application delegate.
+  NSObject* delegate = [[BluAppDelegate alloc] init];
+  [delegate performSelectorOnMainThread:@selector(createApplication:)
+                             withObject:nil
+                          waitUntilDone:NO];
 
-    if (with_chrome_runtime) {
-      // Enable experimental Chrome runtime. See issue #2969 for details.
-      settings.chrome_runtime = true;
-    }
+  // Run the CEF message loop. This will block until CefQuitMessageLoop() is
+  // called.
+  CefRunMessageLoop();
 
-    // When generating projects with CMake the CEF_USE_SANDBOX value will be
-    // defined automatically. Pass -DUSE_SANDBOX=OFF to the CMake command-line
-    // to disable use of the sandbox.
-#if !defined(CEF_USE_SANDBOX)
-    settings.no_sandbox = true;
-#endif
+  // Shut down CEF.
+  CefShutdown();
 
-    // SimpleApp implements application-level callbacks for the browser process.
-    // It will create the first browser instance in OnContextInitialized() after
-    // CEF has initialized.
-    CefRefPtr<SimpleApp> app(new SimpleApp);
+  // Release the delegate.
+  [delegate release];
 
-    // Initialize CEF for the browser process.
-    CefInitialize(main_args, settings, app.get(), nullptr);
-
-    // Create the application delegate.
-    NSObject* delegate = [[SimpleAppDelegate alloc] init];
-    [delegate performSelectorOnMainThread:@selector(createApplication:)
-                               withObject:nil
-                            waitUntilDone:NO];
-
-    // Run the CEF message loop. This will block until CefQuitMessageLoop() is
-    // called.
-    CefRunMessageLoop();
-
-    // Shut down CEF.
-    CefShutdown();
-
-    // Release the delegate.
-#if !__has_feature(objc_arc)
-    [delegate release];
-#endif  // !__has_feature(objc_arc)
-    delegate = nil;
-  }  // @autoreleasepool
+  // Release the AutoRelease pool.
+  [autopool release];
 
   return 0;
 }
