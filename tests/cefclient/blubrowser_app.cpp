@@ -46,11 +46,12 @@ void BluBrowser::OnContextInitialized() {
   if (url.empty())
     url = "about:version";
 
+  CefRefPtr<CefDictionaryValue> extra_info;
   CefRefPtr<CefRequestContext> request_context = CefRequestContext::GetGlobalContext();
 
   // Create the first browser window.
   CefBrowserHost::CreateBrowser(window_info, bluhandler.get(), url,
-                                browser_settings, NULL, request_context);
+                                browser_settings, extra_info, request_context);
 
 }
 
