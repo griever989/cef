@@ -33,8 +33,8 @@ void BluBrowser::OnContextInitialized() {
 
   // Specify CEF browser settings here.
   CefBrowserSettings browser_settings;
-  browser_settings.file_access_from_file_urls = STATE_ENABLED;
-  browser_settings.universal_access_from_file_urls = STATE_ENABLED;
+  // browser_settings.file_access_from_file_urls = STATE_ENABLED; // this is now a flag: allow-file-access-from-files
+  // browser_settings.universal_access_from_file_urls = STATE_ENABLED; // this is now a flag: allow-universal-access-from-files
 
   std::string url;
 
@@ -46,9 +46,11 @@ void BluBrowser::OnContextInitialized() {
   if (url.empty())
     url = "about:version";
 
+  CefRefPtr<CefRequestContext> request_context = CefRequestContext::GetGlobalContext();
+
   // Create the first browser window.
   CefBrowserHost::CreateBrowser(window_info, bluhandler.get(), url,
-                                browser_settings, NULL);
+                                browser_settings, NULL, request_context);
 
 }
 

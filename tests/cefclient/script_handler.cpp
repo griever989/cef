@@ -78,7 +78,7 @@ bool BluScriptHandler::Execute(const CefString& name,
 		}
 
 		// Send the message to the browser process
-		browser->SendProcessMessage(PID_BROWSER, msg);
+		browser->GetMainFrame()->SendProcessMessage(PID_BROWSER, msg);
 
 		// return a true value in js context
 		retval = CefV8Value::CreateBool(true);

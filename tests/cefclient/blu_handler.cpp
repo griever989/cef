@@ -12,6 +12,7 @@
 #include "include/cef_app.h"
 #include "include/wrapper/cef_closure_task.h"
 #include "include/wrapper/cef_helpers.h"
+#include "browser/test_runner.h"
 
 namespace {
 
@@ -92,7 +93,7 @@ void BluHandler::OnLoadError(CefRefPtr<CefBrowser> browser,
         "<h2>Failed to load URL " << std::string(failedUrl) <<
         " with error " << std::string(errorText) << " (" << errorCode <<
         ").</h2></body></html>";
-  frame->LoadString(ss.str(), failedUrl);
+  frame->LoadURL(test_runner::GetDataURI(ss.str(), "text/html"));
 }
 
 void BluHandler::CloseAllBrowsers(bool force_close) {
