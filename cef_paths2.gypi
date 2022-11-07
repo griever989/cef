@@ -363,7 +363,6 @@
       'tests/cefclient/browser/temp_window_win.h',
       'tests/cefclient/browser/window_test_runner_win.cc',
       'tests/cefclient/browser/window_test_runner_win.h',
-      'tests/cefclient/cefclient_win.cc',
       'tests/cefclient/script_handler.cpp',
       'tests/cefclient/script_handler.h',
       'tests/cefclient/blubrowser_win.cpp',
