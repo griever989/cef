@@ -7,7 +7,6 @@
 
 #include <string>
 
-#include "blu_handler.h"
 #include "include/cef_browser.h"
 #include "include/cef_command_line.h"
 #include "include/wrapper/cef_helpers.h"
@@ -19,40 +18,10 @@ BluBrowser::BluBrowser() {
 void BluBrowser::OnContextInitialized() {
   CEF_REQUIRE_UI_THREAD();
 
-  // Information used when creating the native window.
-  CefWindowInfo window_info;
-
-#if defined(OS_WIN)
-  // On Windows we need to specify certain flags that will be passed to
-  // CreateWindowEx().
-  window_info.SetAsPopup(NULL, "BLUI");
-#endif
-
-  // BluHandler implements browser-level callbacks.
-  CefRefPtr<BluHandler> bluhandler(new BluHandler());
-
   // Specify CEF browser settings here.
-  CefBrowserSettings browser_settings;
+  // CefBrowserSettings browser_settings;
   // browser_settings.file_access_from_file_urls = STATE_ENABLED; // this is now a flag: allow-file-access-from-files
   // browser_settings.universal_access_from_file_urls = STATE_ENABLED; // this is now a flag: allow-universal-access-from-files
-
-  std::string url;
-
-  // Check if a "--url=" value was provided via the command-line. If so, use
-  // that instead of the default URL.
-  CefRefPtr<CefCommandLine> command_line =
-      CefCommandLine::GetGlobalCommandLine();
-  url = command_line->GetSwitchValue("url");
-  if (url.empty())
-    url = "about:version";
-
-  CefRefPtr<CefDictionaryValue> extra_info;
-  CefRefPtr<CefRequestContext> request_context = CefRequestContext::GetGlobalContext();
-
-  // Create the first browser window.
-  CefBrowserHost::CreateBrowser(window_info, bluhandler.get(), url,
-                                browser_settings, extra_info, request_context);
-
 }
 
 void BluBrowser::OnContextCreated(CefRefPtr<CefBrowser> browser,
