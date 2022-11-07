@@ -6,8 +6,8 @@
 #ifndef CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
 #define CEF_TESTS_CEFSIMPLE_SIMPLE_APP_H_
 
-#include "script_handler.h"
 #include "include/cef_app.h"
+#include "script_handler.h"
 
 class BluBrowser : public CefApp,
                   public CefBrowserProcessHandler,

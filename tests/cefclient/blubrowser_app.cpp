@@ -11,7 +11,7 @@
 #include "include/cef_browser.h"
 #include "include/cef_command_line.h"
 #include "include/wrapper/cef_helpers.h"
-#include "cefsimple/script_handler.h"
+#include "script_handler.h"
 
 BluBrowser::BluBrowser() {
 }
