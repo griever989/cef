@@ -38,6 +38,16 @@ class ChildWindowDelegate : public CefWindowDelegate {
     window_->AddChildView(browser_view_);
 
     ShowWindow();
+
+    // allow passthrough of mouse for transparent overlay window
+    // see: https://stackoverflow.com/a/50245502/19017508
+    auto widget = static_cast<CefWindowImpl*>(window_.get())->widget();
+    DCHECK(widget);
+    const HWND widget_hwnd = HWNDForWidget(widget);
+    DCHECK(widget_hwnd);
+    const DWORD widget_ex_styles = GetWindowLongPtr(widget_hwnd, GWL_EXSTYLE);
+    SetWindowLongPtr(widget_hwnd, GWL_EXSTYLE, widget_ex_styles | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+    SetLayeredWindowAttributes(widget_hwnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
   }
 
   void OnWindowDestroyed(CefRefPtr<CefWindow> window) override {
