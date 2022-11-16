@@ -328,6 +328,7 @@ bool CefBrowserPlatformDelegateNativeWin::CreateHostWindow() {
   // allow passthrough of mouse for transparent overlay window
   // see: https://stackoverflow.com/a/50245502/19017508
   SetWindowLongPtr(widget_hwnd, GWL_EXSTYLE, widget_ex_styles | WS_EX_TRANSPARENT | WS_EX_LAYERED);
+  SetLayeredWindowAttributes(widget_hwnd, RGB(0, 0, 0), 0, LWA_COLORKEY);
 
   return true;
 }
